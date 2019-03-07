@@ -1,0 +1,152 @@
+线程安全问题产生的原因：
+1、多个线程在操作共享的数据。
+2、操作共享数据的线程代码有多条。
+
+当线程在执行操作共享数据的多条代码过程中，其他线程参与运算。
+就好导致线程安全问题的产生。
+
+解决思路：
+将多条操作共享数据的线程代码封装起来，当有线程在执行这些代码的时候，
+其他线程不可以参与运算
+
+java中，用同步代码块就可以解决这个问题。
+ 同步代码块格式：
+ synchronize （对象）
+ {
+ 	需要同步的代码
+ }
+ 
+ 同步的好处：解决的线程的安全问题。
+ 同步的弊端：相对降低了效率，因为同步外的线程都会判断同步锁。
+ 
+ 同步前提：必须有多个线程并使用同一个锁。
+ 
+ 同步函数：在函数前面使用synchronize关键字修饰。
+
+ 同步函数使用的锁是this。
+ 
+ 静态的同步函数使用的锁是：该函数所属字节码对象。可以用getclass方法获取，也可以用类名.class表示。
+
+ 同步代码块和同步函数锁区别：
+ 1、同步函数的锁是固定this。同步代码块锁是任意。
+ 建议使用同步代码块。
+
+jdk1.5后将同步和锁封装成了对象。并将操作锁的隐式方法定义到了该对象中。将隐式动作变成了显示动作
+
+Lock接口：代替了同步代码块或同步函数。将隐式操作变成显式操作。同时更为灵活，可以一个锁多个监听器
+lock():获取锁。
+unlock():释放锁，通常定义在finally代码中。
+
+Condition接口：替代了object中的wait，notify，notifyAll方法。
+将这些监听器方法单独进行了封装，变成了Condition监听器对象。可以任意组合。
+awit():相当于awit。
+signal():相当于signal。
+signalAll():相当于signalAll。
+
+class Ticket implements Runnable
+{
+	private int num = 100;
+	Object	obj = new Object();
+	public void run() {
+		while (true){
+			synchronized (obj ) {
+				//Object	obj = new Object();错误，不在是同一个锁。
+				if (num > 0){
+					/*try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						// TODO: handle exception
+					}*/
+					System.out.println(Thread.currentThread().getName()+"...."+num--);
+				}
+			}
+		}
+	}
+}
+//jdk1.5后将同步和锁封装成了对象。并将操作锁的隐式方法定义到了该对象中。将隐式动作变成了显示动作
+/*
+class Ticket implements Runnable
+{
+	private int num = 100;
+	Look lock = new ReentrantLock();
+	public void run() {
+		while (true){
+			try{
+		    	lock.lock()//获取锁。
+		    	if (num > 0)
+					System.out.println(Thread.currentThread().getName()+"...."+num--);
+				}
+			finally{
+				lock.unlock()//释放锁
+				}
+			}
+	}
+}
+ */
+public class ThreadDemo4 {
+	public static void main(String[] args) {
+		Ticket ticket = new Ticket();
+		Thread t1 = new Thread(ticket);
+		Thread t2 = new Thread(ticket);
+		Thread t3 = new Thread(ticket);
+		Thread t4 = new Thread(ticket);
+		
+		t1.start();
+		t2.start();
+		t3.start();
+		t4.start();
+	}
+}
+
+
+
+
+死锁
+
+ 死锁常见的情况：循环嵌套。
+ 
+class Test implements Runnable
+{
+	private boolean flag;
+	public Test(boolean flag) {
+		this.flag = flag;
+	}
+	public void run() {
+		if (flag) {
+			synchronized (Mylock.locka) {
+				System.out.println("if lockb....");
+				synchronized (Mylock.lockb) {
+					System.out.println("if lockb....");
+				}
+			}
+		}
+		else {
+			synchronized (Mylock.lockb) {
+				System.out.println("else lockb....");
+				synchronized (Mylock.locka) {
+					System.out.println("else locka....");
+				}
+			}
+		}
+	}
+	
+}
+
+class Mylock
+{
+	public static final Object locka = new Object();
+	public static final Object lockb = new Object();
+}
+
+public class ThreadDemo5 {
+	public static void main(String[] args) {
+		Test a = new Test(true);
+		Test b = new Test(false);
+		
+		Thread t1 = new Thread(a);
+		Thread t2 = new Thread(b);
+		t1.start();
+		t2.start();
+	}
+}
+
