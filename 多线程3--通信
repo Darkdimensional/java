@@ -1,0 +1,113 @@
+ 多线程间通讯：
+ 多个线程在处理同一资源，但是任务却不同。
+ 
+ 等待/唤醒机制。
+ 涉及方法：
+ 1.wait()；让线程处于冻结状态，被wait的线程会被存储到线程池中。
+ 2.notify()；唤醒线程池中一个线程（任意）。
+ 3.notifyAll(); 唤醒线程池中的所以线程。
+
+ wait和sleep区别：
+ 1.wait可以指定时间也可以不指定。sleep必须指定时间。
+ 2.在同步时，对CPU的执行权和锁的处理不同。
+ 	wait：释放执行权，释放锁。
+ 	sleep：释放执行者，不释放锁。
+ 
+ 这些方法必须在同步中：
+ 因为这些方法都是用于操作线程状态的方法。
+ 必须要明确到底操作的是哪个锁上的线程。
+ 
+ wait，notify，notifyAll定义在Object类中。
+ 这些方法是监听器的方法，监听器其实就是锁。
+ 锁可以是任意的对象，所以要定义在Object上。
+
+ 多生成者，多消费者的问题。
+ if判断标记，只有一次，会导致不该运行的线程运行了，出现了数据错误的情况。
+ while判断标记，解决了线程获取执行权后，是否运行问题！
+ notify：只能唤醒一个线程，如果本方唤醒了本方，就没意义，而且while判断标记加notify会导致死锁。
+ notifAll:解决了本方线程一定会唤醒对方线程的问题。
+
+class Resource1  //物资
+{
+	private String name;
+	private int count = 1;
+	private boolean flag = false;
+	//创建一个锁
+	Lock lock = new ReentrantLock();
+	//通过已有的锁获取锁上的2个监视器对象。
+	Condition producer_con = lock.newCondition();
+	Condition consumer_con = lock.newCondition();
+	public void set(String name) {
+		lock.lock();
+		try {
+			while (flag) { 
+				try {producer_con.await();} catch (InterruptedException e) {e.printStackTrace();}
+				//try {wait();}catch (InterruptedException e) {e.printStackTrace();}
+			}
+			this.name = name + count++;
+			System.out.println(Thread.currentThread().getName()+"...生产者..."+ this.name);
+			flag = true;
+			//notifyAll();
+			consumer_con.signal();
+		} finally {
+			lock.unlock();
+		}
+	}
+	public void out() {
+		lock.lock();
+		try {
+			while(!flag) {
+			try {consumer_con.await();} catch (InterruptedException e) {e.printStackTrace();}
+			//while (!flag) {try {wait();} catch (InterruptedException e) {e.printStackTrace();}
+			}
+			System.out.println(Thread.currentThread().getName()+"...消费者..."+ this.name);
+			flag = false;
+			//notifyAll();
+			producer_con.signal();
+		} finally {
+			lock.unlock();
+		}
+	}
+}
+
+class Producer implements Runnable
+{
+	private Resource1 r;
+	public Producer(Resource1 r) {
+		this.r = r;
+	}
+	public void run() {
+		while(true){
+			r.set("烤鸭");
+		}
+	}
+}
+class Consumer implements Runnable
+{
+	private Resource1 r;
+	public Consumer(Resource1 r) {
+		this.r = r;
+	}
+	public void run() {
+		while(true) {
+			r.out();
+		}
+	}
+}
+
+public class ProducerConsumerDemo {
+	public static void main(String[] args) {
+		Resource1 r = new Resource1();
+		Producer pro = new Producer(r);
+		Consumer con = new Consumer(r);
+		Thread t0 = new Thread(pro);
+		Thread t1 = new Thread(pro);
+		Thread t2 = new Thread(con);
+		Thread t3 = new Thread(con);
+		t0.start();
+		t1.start();
+		t2.start();
+		t3.start();
+	}
+}
+
