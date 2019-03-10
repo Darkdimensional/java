@@ -1,0 +1,47 @@
+String类的特点：字符串对象一旦被初始化就不会改变。
+private static void StringDemo2() {
+    String ss = new String(); //等效于String s = "";不等效于String s = null;
+		String s = "abc";  //常量池创建一个对象
+		String s1 = new String("abc");  //在堆内存创建两个对象，一个new，一个字符串。
+		System.out.println(s == s1); //false
+		System.out.println(s.equals(s1)); //true String中的equals覆写方法，比较的是内容
+	}
+
+按照面对对象的思想对字符串常用功能进行分类：
+	一:获取：
+	1.1:获取字符串中字符的个数(长度)。
+		int length();
+	1.2:根据位置获取字符。
+		char charAt(int index);
+	1.3:根据字符获取第一次出现的位置。
+		int indexOf (int/Sting char,null/int FromIndex);FromIndex指定位置开始.
+		int lastindexOf (int/Sting char,null/int FromIndex);从后往前找。
+	1.4：获取字符串中的一部分字符串，也叫子串。
+		Sting substing(int beginIndex,null/endIndex);
+	二:转换。
+	2.1:将字符串变成字符串数组（字符串的切割）。
+		String[] split(String regex);正则表达式
+	2.2:将字符串转变成字符数组。
+		char[] toCharArray();
+	2.3:将字符串转变成字节数组.
+		byte[] getBytes();
+	2.4：将字符串中的字母转换大小写。
+		String toTpperCase();大写
+		String toLowerCase();小写
+	2.5:将字符串中的内容进行替换。
+		String replace(char/Sting oldChar,char/Sting newChar)
+	2.6:将字符串两端字符去除。
+		String trim();
+	2.7:将字符串进行连接。
+		String concat(String str);
+	三:判断：
+	3.1:两个字符串内容是否相同。
+		boolean equals(String str);
+		boolean equalsgnoreCase(String str);忽略大小写。
+	3.2:字符串是否包含指定字符串。//一般用于查找
+		boolean contains(String str);  
+	3.3:字符串是否以指定字符开头，结尾。//一般用于查找
+		boolean startsWith(String str); 
+		boolean endsWith(String str);
+	四:比较:
+		int compareTo(String str);
