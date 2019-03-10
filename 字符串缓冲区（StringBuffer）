@@ -1,0 +1,20 @@
+StringBuffer:字符串缓冲区。
+用于存储数据的容器。
+特点：
+	1：长度可变。
+	2：可以存储不同类型的数据。
+	3：最终转换成字符串。
+	4：可以对字符串修改。
+功能：
+	1.添加：StringBuffer append(data);末尾添加
+			StringBuffer insert(index,data);指定位置添加
+	2.删除：StringBuffer delete(start,end);包含头不包含尾
+			StringBuffer deleteCharAt(int index);删除单个
+	3.查找：char charAt(index);
+			int indexOf(string);
+			int ladtIndexOf(string);
+	4.修改：StringBuffer replace(start,end,string);
+			void setCharAt(index,char)
+			
+jdk1.5以后出现了功能和StringBuffer一模一样的对象。就是StringBuilder
+不同：StringBuffer是线程同步;StringBuilder不同步,通常用于单线程提高效率。
