@@ -1,0 +1,47 @@
+集合类的由来：
+	对象用于封装特有数据，对象多了需要存储，如果对象的个数不确定。
+	就使用集合容器进行存储。
+
+集合特点：
+1：用于存储对象的容器。
+2：集合的长度是可变的。
+3：集合中不可以存储基本数据类型值。
+
+集合容器因为内部的数据结构不同，有多种具体容器。
+不断的向上抽取，就形成了集合框架。
+
+框架的顶层Collection接口：
+
+Collection的常见方法：
+1、添加：
+	boolean add(E obj);
+	boolean addAll(Collection coll);
+	
+2、删除：
+	boolean remove(Object obj);
+	boolean removeAll(Collection coll);
+	void clear();
+
+3、判断:
+	boolean contains(Object obj); //是否包含。
+	boolean containsAll(Collection coll);
+	boolean isEmpty();  //是否为空。
+4、获取:
+	int size();
+	Iterator iterator(); //迭代器。
+	该对象必须依赖具体的容器，因为每一个容器的数据结构不同。
+	所以该迭代器对象时在容器内部实现的（内部类）。
+	对于使用容器而言，具体的实现不重要，只要通过容器获取到该实现的迭代器对象即可，iterator方法。
+	
+	Iterator接口就是对所以的Collection容器进行元素取出的公共接口。
+	
+5、其他
+	boolean retainAll(Collection coll);//取交集。
+	Object[] toArray(); //将集合转成数组。	
+	
+------------------------------------------
+
+Collection
+	|--List：有序（存入和取出的顺序一致），元素都有索引（角标），元素可以重复。
+	|--Set：元素不能重复，无序。
+	
