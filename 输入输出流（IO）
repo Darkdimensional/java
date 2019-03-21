@@ -1,0 +1,50 @@
+输入流与输入流相对于内存设备而言。
+
+将外设中的数据读取到内存中：输入。
+将内存的数据写入到外设中：输出。
+
+字符流的由来：
+字节流读取文字字节数据后，不直接操作而是先查指定的编码表。获取对应的文字。
+在对这个文字进行操作。简单说：字节流+编码表。
+
+------------------------------------------------
+
+字节流的两个顶层父类：
+	1、InputStream
+	2、OutputStream
+
+字符流的两个顶层父类：
+	1、Reader
+	2、Writer
+	
+这些子类体系几乎都已父类名作为后缀。而却子类名的前缀就是该对象的功能。
+	
+如果要操作的文字数据，优先考虑字符流。	
+	
+IO对象建立在try外，在内进行初始化。
+关闭单独try，并且需要判断对象是否为空	
+	FileWriter fw = null;
+		try {
+			fw = new FileWriter("k:\\demo.txt", true);
+		}finally {
+			if (fw != null)
+			try {
+				fw.close();
+			} catch (IOException e) {
+				throw new RuntimeException("关闭失败");
+			}
+
+------------------------------------------------
+
+缓冲区：
+	提高了对数据的读写效率。
+	1、BufferedWriter
+	2、BufferedReat
+
+关闭缓冲区。其实关闭的是缓冲的流对象。
+
+BufferedWriter提供换行方法:newLine();
+BufferedReat提供读行方法:readLine();
+
+
+
