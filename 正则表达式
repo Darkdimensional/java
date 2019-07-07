@@ -1,0 +1,14 @@
+正则表达式对字符串的常见操作：
+ 	1、匹配。
+		使用String类中的matches方法。
+ 	2、切割。
+ 		使用String类中的split方法。
+ 	3、替换。
+ 		使用String类中的replaceAll方法。
+ 	4、获取。
+ 		对正则进行对象封装 
+		 	Pattern p = Pattern.compile("a*b");
+		 	通过正则对象的matcher方法与字符串相关联。获取要对字符串操作的匹配器对象Macher。
+		 	Matcher m = p.natchar("aaaa");
+		 	通过Matcher匹配器对象的方法对字符串进行操作
+			 boolean b = m.matcher();
